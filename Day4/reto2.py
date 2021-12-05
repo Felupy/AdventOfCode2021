@@ -31,20 +31,29 @@ for i in range(1, len(lines)):
 
 ##Apply drafted values
 winner = {}
-try:
-    for value in draw_line.split(','):
-        for b in board_list:
-            b.MarkValue(value)
-            b.calculateBingo()
-            if b.hasBingo():
-                print("BOARD - {0} - WINNER!!!!!!!".format(b.board_num))
+first_winner_found = False
+last_board = {}
+for value in draw_line.split(','):
+    board_bingos_sum = 0
+    for b in board_list:
+        if b.hasBingo():
+            board_bingos_sum += 1
+    if board_bingos_sum == len(board_list):
+        break; #All boards have win!
+
+    for b in board_list:
+        b.MarkValue(value)
+        if b.hasBingo():
+            if not first_winner_found:
+                #print("BOARD - {0} - WINNER!!!!!!!".format(b.board_num))
                 winner = b
-                raise BreakIt
-except BreakIt:
-    #Do nothing?
-    print("Stop looking!");
+                first_winner_found = True
+        else:
+            last_board = b
 
 winner.print()
-print("Final score: ", winner.getFinalScore())
+print("First winner - Final score: ", winner.getFinalScore())
+last_board.print()
+print("Last winner - Final score: ", last_board.getFinalScore())
 
 #board_list[-1].print()
